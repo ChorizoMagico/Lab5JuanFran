@@ -1,8 +1,14 @@
 import scala.annotation.tailrec
+import scala.util.Random
 
 package object kmedianas2D {
 
+  import scala.annotation.tailrec
+  import scala.collection.{Map, Seq}
+  import scala.collection.parallel.CollectionConverters._
+  import scala.util.Random
   import common._
+
 
   /*
   Se define la clase punto. Esta tiene sus coordenadas cartesianas x, y como reales.
@@ -68,13 +74,13 @@ package object kmedianas2D {
     }
 
 
-    if(puntos.lengh <= umb) {
+    if(puntos.length <= umb) {
       clasificarSeq(puntos, medianas)
     } else {
       val(izq, der) = puntos.splitAt(puntos.length / 2)
 
-      val tareaIzq = task { clasificarPar(izq, medianas, umbral)}
-      val tareaDer = task { clasificarPar(der, medianas, umbral)}
+      val tareaIzq = task { clasificarPar(umb)(izq, medianas)}
+      val tareaDer = task { clasificarPar(umb)(der, medianas)}
 
       val resIzq = tareaIzq.join
       val resDer = tareaDer.join
@@ -105,7 +111,7 @@ en una secuencia paralela de puntos (usando puntos.par)
     if(puntos.isEmpty) medianaVieja
     else {
       val puntosPar = puntos.par
-      new Punto(puntosPar.map(p=>p.x).sum /puntos.length, puntosPar.map(p=>p.y).sum/puntos.length)
+      new Punto(puntosPar.map(p=>p.x).sum /puntosPar.size, puntosPar.map(p=>p.y).sum/puntosPar.size)
     }
   }
 
@@ -220,7 +226,7 @@ usando la función calculePromedioSeq definida anteriormente
     @tailrec
     def auxKMean(puntos: Seq[Punto], medianas: Seq[Punto]): Seq[Punto] = {
 
-      val mapViejo = clasificarPar(puntos, medianas)
+      val mapViejo = clasificarPar(5)(puntos, medianas)
       val medianasNuevas = actualizarPar(mapViejo, medianas)
       val hayConvergencia = hayConvergenciaPar(eta, medianas, medianasNuevas)
       if (hayConvergencia) medianasNuevas
@@ -230,5 +236,23 @@ usando la función calculePromedioSeq definida anteriormente
     auxKMean(puntos, medianas)
   }
 
+  def generarPuntos(k: Int , num: Int ): Seq[Punto] = {
+    val randx = new Random
+    val randy = new Random
+    (0 until num)
+      .map(i =>
+      val x = ((i + 1) % k) * 1.0 / k + randx.nextDouble() * 0.5
+      val y = ((i + 5) % k) * 1.0 / k + randy.nextDouble() * 0.5
+      new Punto(x, y)
+      )}
 
-}
+  def  inicializarMedianas(k: Int , puntos: Seq[Punto]): Seq[Punto] = {
+    val rand = new Random
+    (0 until k).map(_ => puntos(rand.nextInt (puntos.length)))
+  }
+
+  }
+
+
+
+
