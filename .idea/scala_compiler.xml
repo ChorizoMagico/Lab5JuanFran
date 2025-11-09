@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ScalaCompilerConfiguration">
     <option name="separateProdTestSources" value="true" />
-    <profile name="sbt 1" modules="Lab5,Lab5.main,Lab5.test" />
+    <profile name="sbt 1" modules="Lab5" />
+    <profile name="sbt 2" modules="Lab5.main,Lab5.test">
+      <option name="implicitConversions" value="true" />
+      <option name="deprecationWarnings" value="true" />
+    </profile>
   </component>
 </project>

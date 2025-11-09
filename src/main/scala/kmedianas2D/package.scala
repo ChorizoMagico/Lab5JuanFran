@@ -6,6 +6,7 @@ package object kmedianas2D {
   import scala.annotation.tailrec
   import scala.collection.{Map, Seq}
   import scala.collection.parallel.CollectionConverters._
+  import scala.math.Numeric.DoubleIsFractional
   import scala.util.Random
   import scala.concurrent._
   import ExecutionContext.Implicits.global
@@ -17,7 +18,7 @@ package object kmedianas2D {
     // Un valor común es usar un porcentaje del tamaño total
     math.max(1000, tamano / 10)
   }
-  
+
   /*
   Se define la clase punto. Esta tiene sus coordenadas cartesianas x, y como reales.
 

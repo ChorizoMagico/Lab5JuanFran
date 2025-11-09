@@ -8,8 +8,9 @@ lazy val root = (project in file("."))
   )
 
 scalacOptions ++= Seq("-language:implicitConversions", "-deprecation")
+
 libraryDependencies ++= Seq(
-  ("com.storm-enroute" %% "scalameter-core" % "0.21").cross(CrossVersion.for3Use2_13),
+  "com.storm-enroute" %% "scalameter" % "0.21",
   "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
   "org.plotly-scala" %% "plotly-render" % "0.8.1"
 )
