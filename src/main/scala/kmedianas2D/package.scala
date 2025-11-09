@@ -159,7 +159,7 @@ usando la función calculePromedioSeq definida anteriormente
   }
 
   /*
-  Función con finalidad idéntica a la anterior, pero paralela. Si las secuencias son de tamaño 1 o menor, 
+  Función con finalidad idéntica a la anterior, pero paralela. Si las secuencias son de tamaño 1 o menor,
   se llama a la versión secuencial. Si no, las divide en dos y llama un hilo para cada mitad, el cual
   vuelve a llamar a la función con la secuencia partida, y así hasta que se llame a la función secuencial.
   Todos los resultados se combinan con &&
@@ -167,7 +167,7 @@ usando la función calculePromedioSeq definida anteriormente
   def hayConvergenciaPar (eta: Double, medianasViejas: Seq[Punto], medianasNuevas: Seq[Punto]): Boolean = {
 
     require(medianasViejas.length == medianasNuevas.length)
-    
+
     if(medianasViejas.length <=1) hayConvergenciaSeq(eta, medianasViejas, medianasNuevas)
     else{
       val(izq1, der1) = medianasViejas.splitAt(medianasViejas.length / 2)
@@ -187,5 +187,48 @@ usando la función calculePromedioSeq definida anteriormente
 
     }
   }
+
+  /*
+  Implementa el algoritmo completo con las funciones secuencias.
+
+  Funciona de esta manera: Dada una secuencia de puntos, unas medianas dadas y un real eta,
+  ordena los puntos con las medianas que les corresponda, luego calcula unas nuevas medianas
+  usando el promedio de las viejas, verifica si convergen estas nuevas medianas (si no están
+  muy alejadas de las anterior) y si convergen, las devuelve. Si no convergen, vuelve a llamar a la función
+  pero ahora con las nuevas medianas
+   */
+  final def kMedianasSeq(puntos: Seq[Punto], medianas: Seq[Punto], eta: Double): Seq[Punto] = {
+
+    @tailrec
+    def auxKMean(puntos: Seq[Punto], medianas: Seq[Punto]): Seq[Punto] = {
+
+      val mapViejo = clasificarSeq(puntos, medianas)
+      val medianasNuevas = actualizarSeq(mapViejo, medianas)
+      val hayConvergencia = hayConvergenciaSeq(eta, medianas, medianasNuevas)
+      if(hayConvergencia) medianasNuevas
+      else auxKMean(puntos, medianasNuevas)
+    }
+
+    auxKMean(puntos, medianas)
+  }
+
+  /*
+  Función idéntica a la anterior pero con las funciones paralelas
+   */
+  final def kMedianasPar(puntos: Seq[Punto] , medianas: Seq[Punto] , eta: Double): Seq[Punto] = {
+
+    @tailrec
+    def auxKMean(puntos: Seq[Punto], medianas: Seq[Punto]): Seq[Punto] = {
+
+      val mapViejo = clasificarPar(puntos, medianas)
+      val medianasNuevas = actualizarPar(mapViejo, medianas)
+      val hayConvergencia = hayConvergenciaPar(eta, medianas, medianasNuevas)
+      if (hayConvergencia) medianasNuevas
+      else auxKMean(puntos, medianasNuevas)
+    }
+
+    auxKMean(puntos, medianas)
+  }
+
 
 }
