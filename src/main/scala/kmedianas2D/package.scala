@@ -7,9 +7,17 @@ package object kmedianas2D {
   import scala.collection.{Map, Seq}
   import scala.collection.parallel.CollectionConverters._
   import scala.util.Random
+  import scala.concurrent._
+  import ExecutionContext.Implicits.global
   import common._
 
 
+  def umbral(tamano: Int): Int = {
+    // Puedes ajustar este valor según lo que necesites
+    // Un valor común es usar un porcentaje del tamaño total
+    math.max(1000, tamano / 10)
+  }
+  
   /*
   Se define la clase punto. Esta tiene sus coordenadas cartesianas x, y como reales.
 
@@ -236,15 +244,16 @@ usando la función calculePromedioSeq definida anteriormente
     auxKMean(puntos, medianas)
   }
 
-  def generarPuntos(k: Int , num: Int ): Seq[Punto] = {
+  def generarPuntos(k: Int, num: Int): Seq[Punto] = {
     val randx = new Random
     val randy = new Random
-    (0 until num)
-      .map(i =>
+
+    (0 until num).map { i =>
       val x = ((i + 1) % k) * 1.0 / k + randx.nextDouble() * 0.5
       val y = ((i + 5) % k) * 1.0 / k + randy.nextDouble() * 0.5
       new Punto(x, y)
-      )}
+    }
+  }
 
   def  inicializarMedianas(k: Int , puntos: Seq[Punto]): Seq[Punto] = {
     val rand = new Random

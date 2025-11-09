@@ -131,6 +131,3 @@ package object Benchmark {
     (tiempoSeq, tiempoPar, tiempoSeq.value/tiempoPar.value)
   }
 }
-
-//  (medianasSeq, medianasSeqfin, clasifFinalSeq, tiempoSeq, tiempoSeq.value)
-//  (medianasPar, medianasParfin, clasifFinalPar, tiempoPar, tiempoPar.value)
