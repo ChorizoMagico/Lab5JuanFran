@@ -133,6 +133,12 @@ usando la función calculePromedioSeq definida anteriormente
     }
   }
 
+  /*
+  Función que compara la distancia entre los dos conjuntos de medianas, y si todas las diferencias son menores a
+  un real dado eta, devuelve true, es decir, que hay convergencia.
+  Esto lo realiza haciendo comparaciones (&&) sobre ambos head de ambas secuencias y llamando de nuevo a la
+  función con el resultado de la anterior comparación y con el tail de las secuencias
+   */
   def hayConvergenciaSeq(eta: Double, medianasViejas: Seq[Punto],
                          medianasNuevas: Seq[Punto]): Boolean ={
 
@@ -152,6 +158,12 @@ usando la función calculePromedioSeq definida anteriormente
     auxConvergenciaIterativa(true, medianasViejas, medianasNuevas)
   }
 
+  /*
+  Función con finalidad idéntica a la anterior, pero paralela. Si las secuencias son de tamaño 1 o menor, 
+  se llama a la versión secuencial. Si no, las divide en dos y llama un hilo para cada mitad, el cual
+  vuelve a llamar a la función con la secuencia partida, y así hasta que se llame a la función secuencial.
+  Todos los resultados se combinan con &&
+   */
   def hayConvergenciaPar (eta: Double, medianasViejas: Seq[Punto], medianasNuevas: Seq[Punto]): Boolean = {
 
     require(medianasViejas.length == medianasNuevas.length)
