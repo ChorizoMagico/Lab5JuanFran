@@ -53,24 +53,44 @@ println("=== PRUEBA COMPLETADA ===")
 
 println("=== PRUEBAS CON MÁS DATOS ===")
 
-// Prueba con 1000 puntos
-val puntos1000 = generarPuntos(5, 1000).toSeq
-val (tiempoSeq1000, tiempoPar1000, acel1000) = tiemposKmedianas(puntos1000, 5, 0.01)
-println(s"1000 puntos - Seq: $tiempoSeq1000, Par: $tiempoPar1000, Acel: $acel1000")
+// Función para imprimir los resultados
+def imprimirResultados(tiempoSeq: org.scalameter.Quantity[Double], tiempoPar: org.scalameter.Quantity[Double], acel: Double, puntos: Int, k: Int) = {
+  println(s"Resultados para $puntos puntos y $k clusters:")
+  println(s"  - Tiempo Secuencial: $tiempoSeq")
+  println(s"  - Tiempo Paralelo: $tiempoPar")
+  println(s"  - Aceleración: $acel")
+  println()
+}
 
-// Prueba con 5000 puntos
-val puntos5000 = generarPuntos(8, 5000).toSeq
-val (tiempoSeq5000, tiempoPar5000, acel5000) = tiemposKmedianas(puntos5000, 8, 0.01)
-println(s"5000 puntos - Seq: $tiempoSeq5000, Par: $tiempoPar5000, Acel: $acel5000")
+// **Prueba 1**: 512 puntos, 4 clusters
+val puntos512 = generarPuntos(4, 512).toSeq
+val (tiempoSeq512, tiempoPar512, acel512) = tiemposKmedianas(puntos512, 4, 0.01)
+imprimirResultados(tiempoSeq512, tiempoPar512, acel512, 512, 4)
 
+// **Prueba 2**: 1024 puntos, 8 clusters
+val puntos1024 = generarPuntos(8, 1024).toSeq
+val (tiempoSeq1024, tiempoPar1024, acel1024) = tiemposKmedianas(puntos1024, 8, 0.01)
+imprimirResultados(tiempoSeq1024, tiempoPar1024, acel1024, 1024, 8)
 
-println("=== PRUEBA CON 10000 PUNTOS ===")
-val puntos10000 = generarPuntos(10, 10000).toSeq
-val (tiempoSeq10000, tiempoPar10000, acel10000) = tiemposKmedianas(puntos10000, 10, 0.01)
-println(s"10000 puntos - Secuencial: $tiempoSeq10000, Paralelo: $tiempoPar10000, Aceleración: $acel10000")
+// **Prueba 3**: 2048 puntos, 16 clusters
+val puntos2048 = generarPuntos(16, 2048).toSeq
+val (tiempoSeq2048, tiempoPar2048, acel2048) = tiemposKmedianas(puntos2048, 16, 0.01)
+imprimirResultados(tiempoSeq2048, tiempoPar2048, acel2048, 2048, 16)
 
+// **Prueba 4**: 4096 puntos, 32 clusters
+val puntos4096 = generarPuntos(32, 4096).toSeq
+val (tiempoSeq4096, tiempoPar4096, acel4096) = tiemposKmedianas(puntos4096, 32, 0.01)
+imprimirResultados(tiempoSeq4096, tiempoPar4096, acel4096, 4096, 32)
+
+// **Prueba 5**: 8192 puntos, 64 clusters
+val puntos8192 = generarPuntos(64, 8192).toSeq
+val (tiempoSeq8192, tiempoPar8192, acel8192) = tiemposKmedianas(puntos8192, 64, 0.01)
+imprimirResultados(tiempoSeq8192, tiempoPar8192, acel8192, 8192, 64)
 // Generar visualización
-probarKmedianas(puntos1000, 5, 0.01)
-probarKmedianas(puntos5000, 5, 0.01)
-probarKmedianas(puntos10000, 5, 0.01)
+probarKmedianas(puntos512, 4, 0.01)
+probarKmedianas(puntos1024,8, 0.01)
+probarKmedianas(puntos2048,16, 0.01)
+probarKmedianas(puntos4096,32, 0.01)
+probarKmedianas(puntos8192,64, 0.01)
+
 println("Archivos HTML generados!")
