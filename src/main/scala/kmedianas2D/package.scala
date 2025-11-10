@@ -36,7 +36,7 @@ package object kmedianas2D {
 
     private def round(v: Double): Double = (v * 100).toInt / 100.0
 
-    override def toString = s"(round(x).{round(y)})"
+    override def toString: String = s"(${round(x)}, ${round(y)})"
   }
 
   /*
@@ -116,13 +116,14 @@ Dado una secuencia de puntos, halla el promedio de ellos (el promedio de sus com
 Función idéntica a la anterior pero usa paralelismo de datos al trasformar la secuencia de puntos
 en una secuencia paralela de puntos (usando puntos.par)
  */
-  def calculePromedioPar (medianaVieja: Punto, puntos: Seq[Punto]): Punto = {
-    if(puntos.isEmpty) medianaVieja
-    else {
-      val puntosPar = puntos.par
-      new Punto(puntosPar.map(p=>p.x).sum /puntosPar.size, puntosPar.map(p=>p.y).sum/puntosPar.size)
-    }
+def calculePromedioPar(medianaVieja: Punto, puntos: Seq[Punto]): Punto = {
+  if(puntos.isEmpty) medianaVieja
+  else {
+    val puntosPar = puntos.par
+    // CORREGIR: usar puntos.length en lugar de puntosPar.size
+    new Punto(puntosPar.map(p=>p.x).sum / puntos.length, puntosPar.map(p=>p.y).sum / puntos.length)
   }
+}
 
 /*
 Función que para cada mediana en la colección Map (o diccionario) calcula una nueva mediana
@@ -213,35 +214,39 @@ usando la función calculePromedioSeq definida anteriormente
   pero ahora con las nuevas medianas
    */
   final def kMedianasSeq(puntos: Seq[Punto], medianas: Seq[Punto], eta: Double): Seq[Punto] = {
-
     @tailrec
-    def auxKMean(puntos: Seq[Punto], medianas: Seq[Punto]): Seq[Punto] = {
-
-      val mapViejo = clasificarSeq(puntos, medianas)
-      val medianasNuevas = actualizarSeq(mapViejo, medianas)
-      val hayConvergencia = hayConvergenciaSeq(eta, medianas, medianasNuevas)
-      if(hayConvergencia) medianasNuevas
-      else auxKMean(puntos, medianasNuevas)
+    def auxKMean(puntos: Seq[Punto], medianas: Seq[Punto], iteraciones: Int = 0): Seq[Punto] = {
+      if (iteraciones > 100) { // LÍMITE DE SEGURIDAD
+        println(s"Advertencia: Límite de iteraciones alcanzado (100) en secuencial")
+        medianas
+      } else {
+        val mapViejo = clasificarSeq(puntos, medianas)
+        val medianasNuevas = actualizarSeq(mapViejo, medianas)
+        val hayConvergencia = hayConvergenciaSeq(eta, medianas, medianasNuevas)
+        if (hayConvergencia) medianasNuevas
+        else auxKMean(puntos, medianasNuevas, iteraciones + 1)
+      }
     }
-
     auxKMean(puntos, medianas)
   }
 
   /*
   Función idéntica a la anterior pero con las funciones paralelas
    */
-  final def kMedianasPar(puntos: Seq[Punto] , medianas: Seq[Punto] , eta: Double): Seq[Punto] = {
-
+  final def kMedianasPar(puntos: Seq[Punto], medianas: Seq[Punto], eta: Double): Seq[Punto] = {
     @tailrec
-    def auxKMean(puntos: Seq[Punto], medianas: Seq[Punto]): Seq[Punto] = {
-
-      val mapViejo = clasificarPar(5)(puntos, medianas)
-      val medianasNuevas = actualizarPar(mapViejo, medianas)
-      val hayConvergencia = hayConvergenciaPar(eta, medianas, medianasNuevas)
-      if (hayConvergencia) medianasNuevas
-      else auxKMean(puntos, medianasNuevas)
+    def auxKMean(puntos: Seq[Punto], medianas: Seq[Punto], iteraciones: Int = 0): Seq[Punto] = {
+      if (iteraciones > 100) { // LÍMITE DE SEGURIDAD
+        println(s"Advertencia: Límite de iteraciones alcanzado (100) en paralelo")
+        medianas
+      } else {
+        val mapViejo = clasificarPar(umbral(puntos.length))(puntos, medianas) // Usar umbral, no 5
+        val medianasNuevas = actualizarPar(mapViejo, medianas)
+        val hayConvergencia = hayConvergenciaPar(eta, medianas, medianasNuevas)
+        if (hayConvergencia) medianasNuevas
+        else auxKMean(puntos, medianasNuevas, iteraciones + 1)
+      }
     }
-
     auxKMean(puntos, medianas)
   }
 

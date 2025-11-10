@@ -73,7 +73,7 @@ package object Benchmark {
     val layoutSeq = Layout().withTitle("Plotting de puntos al azar y medianas iniciales y finales - Versión Secuencial")
 
 
-    Plotly.plot("kmedianasSeq.html", dataSeq, layoutSeq)
+    Plotly.plot("kmedianasSeq.html", dataSeq, layoutSeq, openInBrowser = false)
 
     // Probar lo paralelo
     val puntosPar = puntos
@@ -127,7 +127,10 @@ package object Benchmark {
     val layoutPar = Layout().withTitle("Plotting de puntos al azar y medianas iniciales y finales - Versión Paralela")
 
 
-    Plotly.plot("kmedianasPar.html", dataPar.toSeq, layoutPar)
+    Plotly.plot("kmedianasPar.html", dataPar.toSeq, layoutPar, openInBrowser = false)
     (tiempoSeq, tiempoPar, tiempoSeq.value/tiempoPar.value)
   }
 }
+
+//  (medianasSeq, medianasSeqfin, clasifFinalSeq, tiempoSeq, tiempoSeq.value)
+//  (medianasPar, medianasParfin, clasifFinalPar, tiempoPar, tiempoPar.value)
